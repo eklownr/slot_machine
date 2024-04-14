@@ -35,7 +35,7 @@ def spins():
     spin_animation(spin, 0.1)
     print("")
 
-def jackot_animation():
+def jackpot_animation():
     global money
     money += 5000
     spins()
@@ -96,7 +96,7 @@ def main():
         if response == "":
             used_money += 100
             if random_win == 1:
-                jackot_animation()
+                jackpot_animation()
             elif random_win == 2 or random_win == 3:
                 silver_animation()
             elif random_win == 4 or random_win == 5 or random_win == 6 or random_win == 7 or random_win == 8 or random_win == 9 or random_win == 10:
