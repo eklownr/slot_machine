@@ -46,7 +46,6 @@ def jackpot_animation():
     print("-------------------")
     con.print("[bold blink red] JACKPOT! [/] \nFour cherries in a row!\nCongratulations! You won 5000 $!")
     
-
 def silver_animation():
     global money
     money += 3000
@@ -58,7 +57,6 @@ def silver_animation():
     print("-------------------")
     print("Three cherries in a row!\nCongratulations! You won 3000 $!")
     
-
 def brons_animation():
     global money
     money += 1000
