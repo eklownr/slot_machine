@@ -1,114 +1,314 @@
+# version 4. add one more row. 4x4
 import random
 from rich.console import Console
 from rich import print
 import time
 
-''' Spel enarmad banit, slot machine '''
+""" Spel enarmad banit, slot machine """
 
 money = 1000
 used_money = 0
 con = Console()
+stop_counter = True
+
+old_row0 = {}
+old_row1 = {}
+old_row2 = {}
+old_row3 = {}
 
 all_fruits = ":apple: :banana: :lemon: :melon: :mango: :peach: :pineapple: :watermelon: :grapes: :strawberry: :cherries:"
-jackpot = {1 : ":cherries:", 2 : ":cherries:", 3 : ":cherries:", 4 : ":cherries:"}
-silver = {1 : ":cherries:", 2 : ":cherries:", 3 : ":cherries:", 4 : ":apple:"}
-brons = {1 : ":cherries:", 2 : ":cherries:", 3 : ":banana:", 4 : ":watermelon:"}
+jackpot = {1: ":cherries:", 2: ":cherries:", 3: ":cherries:", 4: ":cherries:"}
+silver = {1: ":cherries:", 2: ":cherries:", 3: ":cherries:", 4: ":apple:"}
+brons = {1: ":cherries:", 2: ":cherries:", 3: ":banana:", 4: ":watermelon:"}
 
-fruits = {1: ":apple:", 2: ":banana:", 3: ":lemon:", 4: ":melon:", 5: ":mango:", 6: ":peach:", 7: ":pineapple:", 8: ":watermelon:", 9: ":grapes:", 10: ":strawberry:", 11: ":cherries:"}
+fusk1  = {1: ":cherries:", 2: ":apple:", 3: ":banana:", 4: ":apple:"}
+fusk2  = {1: ":apple:", 2: ":cherries:", 3: ":apple:", 4: ":watermelon:"}
+fusk3  = {1: ":banana:", 2: ":apple:", 3: ":cherries:", 4: ":apple:"}
+fusk4  = {1: ":apple:", 2: ":lemon:", 3: ":banana:", 4: ":cherries:"}
 
-# Returns a new dictionary with random fruits 
-def spin4_fruits():
+fruits = {
+    1: ":apple:",
+    2: ":banana:",
+    3: ":lemon:",
+    4: ":melon:",
+    5: ":mango:",
+    6: ":peach:",
+    7: ":pineapple:",
+    8: ":watermelon:",
+    9: ":grapes:",
+    10: ":strawberry:",
+    11: ":cherries:",
+}
+
+
+# Returns a new dictionary with 4 random fruits
+def get_4_fruits():
     random_fruits = random.sample(list(fruits.items()), 4)
     new_fruits = dict(random_fruits)
     return new_fruits
 
+
 # print animation
 def spin_animation(fruits, speed):
-   for fruit in fruits:
-        print(fruits[fruit], end=" ", flush=True)
+    for fruit in fruits:
+        print( fruits[fruit] + " |", end=" ", flush=True)
         time.sleep(speed)
         print(" ", end="", flush=True)
 
-def spins():
-    spin = spin4_fruits() # TODO
-    print("-------------------")
-    spin_animation(spin, 0.1)
-    print("")
+
+def spin(num):
+    ''' The main function for spin. num=number from the user. num=witch row to stop '''
+    new_fruit_row_0 = get_4_fruits()
+    new_fruit_row_1 = get_4_fruits()
+    new_fruit_row_2 = get_4_fruits()
+    new_fruit_row_3 = get_4_fruits()
+    
+    # TESTING
+    #new_fruit_row_0 = fusk1
+    #new_fruit_row_1 = fusk2
+    #new_fruit_row_2 = fusk3
+    #new_fruit_row_3 = fusk4
+
+    # check witch row to stop
+    r1, r2, r3, r4 = stop_rows(num, new_fruit_row_0,new_fruit_row_1,new_fruit_row_2, new_fruit_row_3)
+
+    # print new table
+    print_table(r1, r2, r3, r4)
+
+    # check for duplicates fruits
+    find_duplicates(r1, r2, r3, r4)
+
+
+def stop_rows(num, new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_row_3):
+    ''' check whith rows to stop. user send a number to check '''
+    global old_row0 
+    global old_row1 
+    global old_row2
+    global old_row3
+    global stop_counter
+        
+    # save old_row from one play, ahead onley one time
+    if stop_counter == False:
+        old_row0 = new_fruit_row_0
+        old_row1 = new_fruit_row_1
+        old_row2 = new_fruit_row_2
+        old_row3 = new_fruit_row_3
+        stop_counter = True
+        print("Stop rows this time = ", stop_counter)
+    elif stop_counter == True: 
+        stop_counter = False
+        print("Stop rows this time = ", stop_counter)
+    
+    ''' Stop row with 6 different cominatons: 12, 13, 14, 23, 24, 34 '''
+    # user stop row 1 and 2
+    if num == 12 and stop_counter == True:
+        old_row0 = new_fruit_row_0
+        old_row1 = new_fruit_row_1
+    elif num == 12 and stop_counter == False:
+        new_fruit_row_0 = old_row0 # replays row with the old_row
+        new_fruit_row_1 = old_row1 # replays row with the old_row
+
+    # user stop row 1 and 3
+    if num == 13 and stop_counter == True:
+        old_row0 = new_fruit_row_0
+        old_row2 = new_fruit_row_2
+    elif num == 13 and stop_counter == False:
+        new_fruit_row_0 = old_row0 # replays row with the old_row
+        new_fruit_row_2 = old_row2 # replays row with the old_row
+
+    # user stop row 1 and 4
+    if num == 14 and stop_counter == True:
+        old_row0 = new_fruit_row_0
+        old_row3 = new_fruit_row_3
+    elif num == 14 and stop_counter == False:
+        new_fruit_row_0 = old_row0 # replays row with the old_row
+        new_fruit_row_3 = old_row3 # replays row with the old_row
+
+    # user stop row 2 and 3
+    if num == 23 and stop_counter == True:
+        old_row1 = new_fruit_row_1
+        old_row2 = new_fruit_row_2
+    elif num == 23 and stop_counter == False:
+        new_fruit_row_1 = old_row1 # replays row with the old_row
+        new_fruit_row_2 = old_row2 # replays row with the old_row
+
+    # user stop row 2 and 4
+    if num == 24 and stop_counter == True:
+        old_row1 = new_fruit_row_1
+        old_row3 = new_fruit_row_3
+    elif num == 24 and stop_counter == False:
+        new_fruit_row_1 = old_row1 # replays row with the old_row
+        new_fruit_row_3 = old_row3 # replays row with the old_row
+
+    # user stop row 3 and 4
+    if num == 34 and stop_counter == True:
+        old_row2 = new_fruit_row_2
+        old_row3 = new_fruit_row_3
+    elif num == 34 and stop_counter == False:
+        new_fruit_row_2 = old_row2 # replays row with the old_row
+        new_fruit_row_3 = old_row3 # replays row with the old_row
+
+    
+    # print new table
+    return new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_row_3
+
+
+
+def print_table(new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_row_3,  ):
+    print("        -----------------------")
+    print("Row 1: | ", end=" ")
+    spin_animation(new_fruit_row_0, 0.1)
+    print("\n       |     |     |     |     |   ")
+    print("Row 2: | ", end=" ")
+    spin_animation(new_fruit_row_1, 0.1)
+    print("\n       |     |     |     |     |   ")
+    print("Row 3: | ", end=" ")
+    spin_animation(new_fruit_row_2, 0.1)
+    print("\n       |     |     |     |     |   ")
+    print("Row 4: | ", end=" ")
+    spin_animation(new_fruit_row_3, 0.1)
+    print("\n        -----------------------")
+
+
+def find_duplicates(r1, r2, r3, r4):
+    ''' find duplicates and add money if win '''
+    global money
+    rad0 = list(r1.values())
+    rad1 = list(r2.values())
+    rad2 = list(r3.values())
+    rad3 = list(r4.values())
+
+    # check ONLY ONES for cross winns. Right to left
+    if rad0[0] == rad1[1] and rad2[2] == rad0[0] and rad3[3] == rad0[0]:
+        print("Winning on: ", rad0[0], rad1[1], rad2[2], rad3[3], " !")
+        print("You won 500 000 €")
+        print("row 1 and 2 and 3 and 4")
+        super_mega_jackpot_animation()
+        money += 500000
+
+    # check ONLY ONES for cross winns. Left to right
+    if rad0[3] == rad1[2] and rad2[1] == rad0[3] and rad3[0] == rad0[3]:
+        print("Winning on: ", rad0[3], rad1[2], rad2[1], rad3[0], " !")
+        print("You won 500 000 €")
+        print("row 1 and 2 and 3 and 4")
+        super_mega_jackpot_animation()
+        money += 500000
+
+    for i in range(4):
+        # check row 1,2,3,4
+        if rad0[i] == rad1[i] and rad2[i] == rad0[i] and rad3[i] == rad0[i]:
+            print("Winning on: ", rad0[i], rad1[i], rad2[i], rad3[i], " !")
+            print("You won 200 000 €")
+            print("row 1 and 2 and 3 and 4")
+            mega_jackpot_animation()
+            money += 200000
+        # check row 1,2,3
+        if rad0[i] == rad1[i] and rad2[i] == rad0[i]:
+            print("Winning on: ", rad0[i], rad1[i], rad2[i], " !")
+            print("You won 10 000 €")
+            print("row 1 and 2 and 3")
+            jackpot_animation()
+            money += 10000
+        # check row 2,3,4
+        if rad1[i] == rad2[i] and rad2[i] == rad3[i]:
+            print("Winning on: ", rad1[i], rad2[i], rad3[i], " !")
+            print("You won 10 000 €")
+            print("row 2 and 3 and 4")
+            jackpot_animation()
+            money += 10000
+        elif rad0[i] == rad1[i]:
+            print("Winning on: ", rad0[i], rad1[i], " !")
+            print("You won [yellow]FREE SPIN[/]")
+            print("row 1 and 2")
+            money += 100
+        elif rad1[i] == rad2[i]:
+            print("Winning on: ", rad1[i], rad2[i], " !")
+            print("You won [yellow]FREE SPIN[/]")
+            print("row 2 and 3")
+            money += 100
+        elif rad2[i] == rad3[i]:
+            print("Winning on: ", rad2[i], rad3[i], " !")
+            print("You won [yellow]FREE SPIN[/]")
+            print("row 3 and 4")
+            money += 100
+
+
+
+def super_mega_jackpot_animation():
+    global con
+    con.print(
+        "[bold blink red] SUPER MEGA JACKPOT! [/] \nCongratulations! You won 500 000 !"
+    )
+
+
+def mega_jackpot_animation():
+    global con
+    con.print(
+        "[bold blink red] MEGA JACKPOT! [/] \nCongratulations! You won 200 000 !"
+    )
+
 
 def jackpot_animation():
-    global money
-    money += 5000
-    spins()
-    print("-------------------")
-    spin_animation(jackpot, 0.5)
-    print("")
-    spins()
-    print("-------------------")
-    con.print("[bold blink red] JACKPOT! [/] \nFour cherries in a row!\nCongratulations! You won 5000 $!")
-    
-def silver_animation():
-    global money
-    money += 3000
-    spins()
-    print("-------------------")
-    spin_animation(silver, 0.5)
-    print("")
-    spins()
-    print("-------------------")
-    print("Three cherries in a row!\nCongratulations! You won 3000 $!")
-    
-def brons_animation():
-    global money
-    money += 1000
-    spins()
-    print("-------------------")
-    spin_animation(brons, 0.5)
-    print("")
-    spins()
-    print("-------------------")
-    print("Two cherries in a row!\nCongratulations! You won 1000 $!")
-    
+    global con
+    con.print(
+        "[bold blink red] JACKPOT! [/] \nCongratulations! You won 10 000 !"
+    )
 
-# Welcome message
-con.print(all_fruits)
-con.print("Welcome to lose all your money in the :moneybag:[bold red]SLOT MACHINE[/]:moneybag:", style="bold yellow")
-con.print("\n:slot_machine: Hit [bold red]ENTER[/] to Spin the fruits end win the game!:slot_machine: ")
-spin_animation(spin4_fruits(), 0.1)
+
+def welcome_message():
+    global con
+    con.print(all_fruits, all_fruits)
+    con.print(
+        "Welcome to play and to lose all your money in the :moneybag:[bold red]SLOT MACHINE[/]:moneybag:",
+        style="bold yellow",
+    )
+    con.print(
+        "\n:slot_machine: Hit [bold red]ENTER[/] to Spin the fruits and win the game!:slot_machine: "
+    )
+    con.print("To stop rows use: 12, 13, 14, 23, 24 or 34", style="bold green",)
+    spin_animation(get_4_fruits(), 0.1)
 
 
 def main():
-    global money, used_money
+    global money, used_money, con
     congrats = 10000
+    welcome_message()
+
     while True:
-        random_win = random.randint(1, 20)
-        
         if money - used_money < 100:
             con.print("You don't have enough money to play!")
             break
         if money - used_money > congrats:
             con.print(f"[bold yellow blink]Congratulations [/]You have now: {money - used_money} $!")
             congrats += 10000
-            
+
         response = input(f"\n{money - used_money} $ Hit ENTER to spin: ")
-        
-        if response == "":
-            used_money += 100
-            if random_win == 1:
-                jackpot_animation()
-            elif random_win == 2 or random_win == 3:
-                silver_animation()
-            elif random_win == 4 or random_win == 5 or random_win == 6 or random_win == 7 or random_win == 8 or random_win == 9 or random_win == 10:
-                brons_animation()
-            else:    
-                for _ in range(3):
-                    spins()
+
+        if response == "":  # Hitt enter to play
+            used_money += 100 # It cost 100 to play
+            spin(0)
         elif response == "q":
             con.print("Thank you for playing!")
             break
+        elif response == "12": # stop row 1 and 2
+            spin(12)
+        elif response == "13":
+            spin(13)
+        elif response == "14":
+            spin(14)
+        elif response == "23":
+            spin(23)
+        elif response == "24":
+            spin(24)
+        elif response == "34":
+            spin(34)
         else:
             con.print("'q' for quit.")
-            con.print(f":wheel_of_dharma: Spin Money to use: [bold red]{money - used_money}[/] $")
-            
+            con.print("To stop rows use: 12, 13, 14, 23, 24 or 34")
+            con.print(
+                f":wheel_of_dharma: Spin Money to use: [bold red]{money - used_money}[/] $"
+            )
+
 
 if __name__ == "__main__":
     main()
