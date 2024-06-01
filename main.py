@@ -21,10 +21,11 @@ jackpot = {1: ":cherries:", 2: ":cherries:", 3: ":cherries:", 4: ":cherries:"}
 silver = {1: ":cherries:", 2: ":cherries:", 3: ":cherries:", 4: ":apple:"}
 brons = {1: ":cherries:", 2: ":cherries:", 3: ":banana:", 4: ":watermelon:"}
 
-fusk1  = {1: ":cherries:", 2: ":apple:", 3: ":banana:", 4: ":apple:"}
-fusk2  = {1: ":apple:", 2: ":cherries:", 3: ":apple:", 4: ":watermelon:"}
-fusk3  = {1: ":banana:", 2: ":apple:", 3: ":cherries:", 4: ":apple:"}
-fusk4  = {1: ":apple:", 2: ":lemon:", 3: ":banana:", 4: ":cherries:"}
+# TESTING
+#fusk1  = {1: ":cherries:", 2: ":apple:", 3: ":banana:", 4: ":apple:"}
+#fusk2  = {1: ":apple:", 2: ":cherries:", 3: ":apple:", 4: ":watermelon:"}
+#fusk3  = {1: ":banana:", 2: ":apple:", 3: ":cherries:", 4: ":apple:"}
+#fusk4  = {1: ":apple:", 2: ":lemon:", 3: ":banana:", 4: ":cherries:"}
 
 fruits = {
     1: ":apple:",
@@ -80,14 +81,14 @@ def spin(num):
 
 
 def stop_rows(num, new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_row_3):
-    ''' check whith rows to stop. user send a number to check '''
+    ''' check which rows to stop. num=number of the row to stop '''
     global old_row0 
     global old_row1 
     global old_row2
     global old_row3
     global stop_counter
         
-    # save old_row from one play, ahead onley one time
+    # save old_row from the spin before
     if stop_counter == False:
         old_row0 = new_fruit_row_0
         old_row1 = new_fruit_row_1
@@ -99,57 +100,76 @@ def stop_rows(num, new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_
         stop_counter = False
         print("Stop rows this time = ", stop_counter)
     
-    ''' Stop row with 6 different cominatons: 12, 13, 14, 23, 24, 34 '''
+    ''' Stop row with 8 different combinations: 12, 13, 14, 23, 24, 34, 124, 134 '''
     # user stop row 1 and 2
     if num == 12 and stop_counter == True:
         old_row0 = new_fruit_row_0
         old_row1 = new_fruit_row_1
     elif num == 12 and stop_counter == False:
-        new_fruit_row_0 = old_row0 # replays row with the old_row
-        new_fruit_row_1 = old_row1 # replays row with the old_row
+        new_fruit_row_0 = old_row0 # replace row with the old_row
+        new_fruit_row_1 = old_row1 # replace row with the old_row
 
     # user stop row 1 and 3
     if num == 13 and stop_counter == True:
         old_row0 = new_fruit_row_0
         old_row2 = new_fruit_row_2
     elif num == 13 and stop_counter == False:
-        new_fruit_row_0 = old_row0 # replays row with the old_row
-        new_fruit_row_2 = old_row2 # replays row with the old_row
+        new_fruit_row_0 = old_row0 # replace row with the old_row
+        new_fruit_row_2 = old_row2 # replace row with the old_row
 
     # user stop row 1 and 4
     if num == 14 and stop_counter == True:
         old_row0 = new_fruit_row_0
         old_row3 = new_fruit_row_3
     elif num == 14 and stop_counter == False:
-        new_fruit_row_0 = old_row0 # replays row with the old_row
-        new_fruit_row_3 = old_row3 # replays row with the old_row
+        new_fruit_row_0 = old_row0 # replace row with the old_row
+        new_fruit_row_3 = old_row3 # replace row with the old_row
 
     # user stop row 2 and 3
     if num == 23 and stop_counter == True:
         old_row1 = new_fruit_row_1
         old_row2 = new_fruit_row_2
     elif num == 23 and stop_counter == False:
-        new_fruit_row_1 = old_row1 # replays row with the old_row
-        new_fruit_row_2 = old_row2 # replays row with the old_row
+        new_fruit_row_1 = old_row1 # replace row with the old_row
+        new_fruit_row_2 = old_row2 # replace row with the old_row
 
     # user stop row 2 and 4
     if num == 24 and stop_counter == True:
         old_row1 = new_fruit_row_1
         old_row3 = new_fruit_row_3
     elif num == 24 and stop_counter == False:
-        new_fruit_row_1 = old_row1 # replays row with the old_row
-        new_fruit_row_3 = old_row3 # replays row with the old_row
+        new_fruit_row_1 = old_row1 # replace row with the old_row
+        new_fruit_row_3 = old_row3 # replace row with the old_row
 
     # user stop row 3 and 4
     if num == 34 and stop_counter == True:
         old_row2 = new_fruit_row_2
         old_row3 = new_fruit_row_3
     elif num == 34 and stop_counter == False:
-        new_fruit_row_2 = old_row2 # replays row with the old_row
-        new_fruit_row_3 = old_row3 # replays row with the old_row
+        new_fruit_row_2 = old_row2 # replace row with the old_row
+        new_fruit_row_3 = old_row3 # replace row with the old_row
 
-    
-    # print new table
+    # user stop row 1, 3 and 4. Stop 3 rows!
+    if num == 134 and stop_counter == True:
+        old_row0 = new_fruit_row_0
+        old_row2 = new_fruit_row_2
+        old_row3 = new_fruit_row_3
+    elif num == 134 and stop_counter == False:
+        new_fruit_row_0 = old_row0
+        new_fruit_row_2 = old_row2 
+        new_fruit_row_3 = old_row3 
+
+    # user stop row 1, 2 and 4. Stop 3 rows!
+    if num == 124 and stop_counter == True:
+        old_row0 = new_fruit_row_0
+        old_row1 = new_fruit_row_1
+        old_row3 = new_fruit_row_3
+    elif num == 124 and stop_counter == False:
+        new_fruit_row_0 = old_row0
+        new_fruit_row_1 = old_row1 
+        new_fruit_row_3 = old_row3 
+   
+    # return new table
     return new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_row_3
 
 
@@ -178,7 +198,7 @@ def find_duplicates(r1, r2, r3, r4):
     rad2 = list(r3.values())
     rad3 = list(r4.values())
 
-    # check ONLY ONES for cross winns. Right to left
+    # check ONLY ONCE for diagonal wins. Left to right
     if rad0[0] == rad1[1] and rad2[2] == rad0[0] and rad3[3] == rad0[0]:
         print("Winning on: ", rad0[0], rad1[1], rad2[2], rad3[3], " !")
         print("You won 500 000 €")
@@ -186,7 +206,7 @@ def find_duplicates(r1, r2, r3, r4):
         super_mega_jackpot_animation()
         money += 500000
 
-    # check ONLY ONES for cross winns. Left to right
+    # check ONLY ONCE for diagonal wins. Right to left 
     if rad0[3] == rad1[2] and rad2[1] == rad0[3] and rad3[0] == rad0[3]:
         print("Winning on: ", rad0[3], rad1[2], rad2[1], rad3[0], " !")
         print("You won 500 000 €")
@@ -265,14 +285,17 @@ def welcome_message():
     con.print(
         "\n:slot_machine: Hit [bold red]ENTER[/] to Spin the fruits and win the game!:slot_machine: "
     )
-    con.print("To stop rows use: 12, 13, 14, 23, 24 or 34", style="bold green",)
-    spin_animation(get_4_fruits(), 0.1)
+    con.print("To stop rows use: 12, 13, 14, 23, 24, 34 124 or 134", style="bold green",)
+    con.print("I give you a free spin", style="purple")
 
 
 def main():
     global money, used_money, con
     congrats = 10000
     welcome_message()
+
+    # run one free spin
+    spin(0)
 
     while True:
         if money - used_money < 100:
@@ -292,9 +315,9 @@ def main():
             break
         elif response == "12": # stop row 1 and 2
             spin(12)
-        elif response == "13":
+        elif response == "13": # stop row 1 and 3
             spin(13)
-        elif response == "14":
+        elif response == "14": # ...
             spin(14)
         elif response == "23":
             spin(23)
@@ -302,9 +325,13 @@ def main():
             spin(24)
         elif response == "34":
             spin(34)
+        elif response == "124":
+            spin(124)
+        elif response == "134":
+            spin(134)
         else:
             con.print("'q' for quit.")
-            con.print("To stop rows use: 12, 13, 14, 23, 24 or 34")
+            con.print("To stop rows use: 12, 13, 14, 23, 24, 34, 124 or 134")
             con.print(
                 f":wheel_of_dharma: Spin Money to use: [bold red]{money - used_money}[/] $"
             )
