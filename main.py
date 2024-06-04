@@ -10,6 +10,7 @@ money = 1000
 used_money = 0
 con = Console()
 stop_counter = True
+win = False # if you able to stop 3 rows
 
 old_row0 = {}
 old_row1 = {}
@@ -87,6 +88,7 @@ def stop_rows(num, new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_
     global old_row2
     global old_row3
     global stop_counter
+    global win
         
     # save old_row from the spin before
     if stop_counter == False:
@@ -95,6 +97,7 @@ def stop_rows(num, new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_
         old_row2 = new_fruit_row_2
         old_row3 = new_fruit_row_3
         stop_counter = True
+        win = False
         print("Stop rows this time = ", stop_counter)
     elif stop_counter == True: 
         stop_counter = False
@@ -168,7 +171,31 @@ def stop_rows(num, new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_
         new_fruit_row_0 = old_row0
         new_fruit_row_1 = old_row1 
         new_fruit_row_3 = old_row3 
-   
+    
+    # TODO if not win do this...
+    # stop row 1, 2 and 3. 
+    if win == False:
+        if num == 123 and stop_counter == True:
+            old_row0 = new_fruit_row_0
+            old_row1 = new_fruit_row_1
+            old_row2 = new_fruit_row_2
+        elif num == 123 and stop_counter == False:
+            new_fruit_row_0 = old_row0 
+            new_fruit_row_1 = old_row1 
+            new_fruit_row_2 = old_row2 
+            win = True
+
+        # user stop row 2, 3 and 4. 
+        if num == 234 and stop_counter == True:
+            old_row1 = new_fruit_row_1
+            old_row2 = new_fruit_row_2
+            old_row3 = new_fruit_row_3
+        elif num == 234 and stop_counter == False:
+            new_fruit_row_1 = old_row1
+            new_fruit_row_2 = old_row2 
+            new_fruit_row_3 = old_row3 
+            win = True
+    
     # return new table
     return new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_row_3
 
@@ -192,7 +219,7 @@ def print_table(new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_row
 
 def find_duplicates(r1, r2, r3, r4):
     ''' find duplicates and add money if win '''
-    global money
+    global money, win
     rad0 = list(r1.values())
     rad1 = list(r2.values())
     rad2 = list(r3.values())
@@ -222,20 +249,23 @@ def find_duplicates(r1, r2, r3, r4):
             print("row 1 and 2 and 3 and 4")
             mega_jackpot_animation()
             money += 200000
+            win = True
         # check row 1,2,3
-        if rad0[i] == rad1[i] and rad2[i] == rad0[i]:
+        elif rad0[i] == rad1[i] and rad2[i] == rad0[i]:
             print("Winning on: ", rad0[i], rad1[i], rad2[i], " !")
             print("You won 10 000 €")
             print("row 1 and 2 and 3")
             jackpot_animation()
             money += 10000
+            win = True
         # check row 2,3,4
-        if rad1[i] == rad2[i] and rad2[i] == rad3[i]:
+        elif rad1[i] == rad2[i] and rad2[i] == rad3[i]:
             print("Winning on: ", rad1[i], rad2[i], rad3[i], " !")
             print("You won 10 000 €")
             print("row 2 and 3 and 4")
             jackpot_animation()
             money += 10000
+            win = True
         elif rad0[i] == rad1[i]:
             print("Winning on: ", rad0[i], rad1[i], " !")
             print("You won [yellow]FREE SPIN[/]")
@@ -329,6 +359,10 @@ def main():
             spin(124)
         elif response == "134":
             spin(134)
+        elif response == "123":
+            spin(123)
+        elif response == "234":
+            spin(234)
         else:
             con.print("'q' for quit.")
             con.print("To stop rows use: 12, 13, 14, 23, 24, 34, 124 or 134")
