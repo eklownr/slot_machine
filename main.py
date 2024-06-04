@@ -4,7 +4,7 @@ from rich.console import Console
 from rich import print
 import time
 
-""" Spel enarmad banit, slot machine """
+""" Slot machine for the terminal """
 
 money = 1000
 used_money = 0
@@ -18,15 +18,6 @@ old_row2 = {}
 old_row3 = {}
 
 all_fruits = ":apple: :banana: :lemon: :melon: :mango: :peach: :pineapple: :watermelon: :grapes: :strawberry: :cherries:"
-jackpot = {1: ":cherries:", 2: ":cherries:", 3: ":cherries:", 4: ":cherries:"}
-silver = {1: ":cherries:", 2: ":cherries:", 3: ":cherries:", 4: ":apple:"}
-brons = {1: ":cherries:", 2: ":cherries:", 3: ":banana:", 4: ":watermelon:"}
-
-# TESTING
-#fusk1  = {1: ":cherries:", 2: ":apple:", 3: ":banana:", 4: ":apple:"}
-#fusk2  = {1: ":apple:", 2: ":cherries:", 3: ":apple:", 4: ":watermelon:"}
-#fusk3  = {1: ":banana:", 2: ":apple:", 3: ":cherries:", 4: ":apple:"}
-#fusk4  = {1: ":apple:", 2: ":lemon:", 3: ":banana:", 4: ":cherries:"}
 
 fruits = {
     1: ":apple:",
@@ -65,12 +56,6 @@ def spin(num):
     new_fruit_row_2 = get_4_fruits()
     new_fruit_row_3 = get_4_fruits()
     
-    # TESTING
-    #new_fruit_row_0 = fusk1
-    #new_fruit_row_1 = fusk2
-    #new_fruit_row_2 = fusk3
-    #new_fruit_row_3 = fusk4
-
     # check witch row to stop
     r1, r2, r3, r4 = stop_rows(num, new_fruit_row_0,new_fruit_row_1,new_fruit_row_2, new_fruit_row_3)
 
@@ -172,7 +157,6 @@ def stop_rows(num, new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_
         new_fruit_row_1 = old_row1 
         new_fruit_row_3 = old_row3 
     
-    # TODO if not win do this...
     # stop row 1, 2 and 3. 
     if win == False:
         if num == 123 and stop_counter == True:
@@ -195,7 +179,8 @@ def stop_rows(num, new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_
             new_fruit_row_2 = old_row2 
             new_fruit_row_3 = old_row3 
             win = True
-    
+    else: print("Not able to stop any rows!")
+
     # return new table
     return new_fruit_row_0, new_fruit_row_1, new_fruit_row_2, new_fruit_row_3
 
